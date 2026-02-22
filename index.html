@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademik Translator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#4e73df,#1cc88a);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    width:420px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+textarea{
+    width:100%;
+    height:100px;
+    padding:10px;
+    margin-bottom:10px;
+    resize:none;
+}
+
+.select-group{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+select{
+    width:48%;
+    padding:8px;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:#4e73df;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+    border-radius:8px;
+}
+
+button:hover{
+    background:#2e59d9;
+}
+
+#error{
+    color:red;
+    text-align:center;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🌍 Akademik Translator</h2>
+
+<textarea id="inputText" placeholder="Metni yaz..."></textarea>
+
+<div class="select-group">
+<select id="fromLang">
+<option value="tr">Türkçe</option>
+<option value="en">İngilizce</option>
+</select>
+
+<select id="toLang">
+<option value="en">İngilizce</option>
+<option value="tr">Türkçe</option>
+</select>
+</div>
+
+<button onclick="translateText()">Çevir</button>
+
+<textarea id="outputText" placeholder="Çeviri burada çıkacak..." readonly></textarea>
+
+<div id="error"></div>
+
+</div>
+
+<script>
+function translateText(){
+
+const text = document.getElementById("inputText").value.trim();
+const from = document.getElementById("fromLang").value;
+const to = document.getElementById("toLang").value;
+const errorDiv = document.getElementById("error");
+
+errorDiv.innerText = "";
+
+if(text === ""){
+errorDiv.innerText = "Metin gir.";
+return;
+}
+
+fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${from}&tl=${to}&dt=t&q=${encodeURIComponent(text)}`)
+.then(res => res.json())
+.then(data => {
+document.getElementById("outputText").value = data[0][0][0];
+})
+.catch(() => {
+errorDiv.innerText = "Çeviri yapılamadı.";
+});
+
+}
+</script>
+
+</body>
+</html>
